@@ -1,59 +1,41 @@
-# Wall_Following
+# Wall Following Robot with Vision Navigation
 
-## 迭代记录
+基于 CoppeliaSim 的移动机器人，融合超声波传感器与视觉识别，实现沿墙行走、避障、红色目标跟踪。
 
-### v1.0 — 基础移动与传感器读取
+## 一. Features
 
-文件：control_pioneer.py
+- **沿墙行走**：P 控制器保持恒定距离（目标 0.25m），Kp=20 时响应快且稳定
+- **多传感器避障**：两个超声波传感器 + 加权融合，无死角、无锯齿
+- **视觉导航**：HSV 颜色空间识别红色目标，视觉伺服控制转向
+- **状态机**：搜索红色 → 导航 → 到达，自动切换控制模式
 
-功能：小车直行、读取超声波传感器、打印速度反馈
+## 二. Quick Start
 
-局限：无避障逻辑
+### 仿真场景
 
-### v1.1 — 单传感器避障
+在 CoppeliaSim 中打开场景文件
 
-文件：left_rotate_v1.py
+[Pioneer P3DX 小车 + 红色方块 + 视觉传感器](Coppeliasim_Scene/pioneer_position_control_with_PID_with_turning.ttt)
 
-功能：前方0.4米内检测到障碍 → 左转直到安全
+### 依赖
 
-问题：单传感器有死角，会卡在墙角
+- Python 3.8+
 
-### v1.2 — 双传感器避障
+- `pip install coppeliasim-zmqremoteapi-client opencv-python numpy`
 
-文件：left_rotate_v2.py
+### 运行
 
-功能：两个超声波传感器，解决死角问题
+```bash
+git clone https://github.com/sitiycs/Wall_Following.git
+cd Wall_Following/src/final
+python position_control_with_imagesensor_v3.py
+```
 
-问题：转向离散（固定步数），路径锯齿化
+## 三. 迭代记录
 
-### v1.3 — P 控制恒距跟踪
+[历史版本合集 + 调参对比 + 最终版：视觉导航 v2.0](docs/Iteration_document.md)
 
-文件：position_control_with_PID.py
+## 四. Demo Video
 
-功能：P 控制器保持恒定距离（目标0.25m）
+[videos](docs/video_link.md)
 
-改进：从离散转向升级为连续控制
-
-问题：只能在单墙场景工作，无视觉
-
-### v1.4 — 双传感器融合（避障+控距）
-
-文件：position_control_with_PID_v2.py
-
-功能：前方避障（安全距离1m）+ 右侧控距（P控制）
-
-问题：无视觉，只能被动避障
-
-### v2.0 — 视觉导航（最终版）
-
-文件：position_control_with_imagesensor_v3.py
-
-功能：
-红色目标识别（HSV 颜色空间）
-视觉伺服：根据红色位置控制转向（左/右/停）
-无红色时自动切换超声波控距与避障
-
-亮点：
-完整的感知-决策-控制闭环
-传感器融合（视觉 + 超声波）
-状态机设计（搜索红色 → 导航 → 到达）
