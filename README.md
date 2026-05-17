@@ -39,3 +39,6 @@ python position_control_with_imagesensor_v3.py
 
 [videos](docs/video_link.md)
 
+## 五. 实验报告
+
+[report](docs/report.pdf)
